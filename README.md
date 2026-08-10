@@ -1,9 +1,30 @@
 # MemeVault
 
-A simple, self-hosted meme gallery. Images, GIFs, and videos, tagged and
-searchable, served as a static site — no backend needed.
+A 9GAG-style meme feed. Images, GIFs, and videos, tagged and searchable,
+with public submissions and voting.
 
-Live at: **meme.theapurva.com** (once DNS + GitHub Pages are set up — see below).
+Live at: **meme.theapurva.com**
+
+## How the backend works
+
+The site itself is static (GitHub Pages). GitHub is the actual backend —
+submissions become Issues, approved memes live in `memes.json` + `memes/`,
+and vote tallies live in `votes.json`. Since GitHub requires a login to
+write anything, a small Cloudflare Worker (`worker.js`, deployed at
+`meme-api.theapurva.com`) holds a scoped GitHub token and relays visitor
+submissions/votes into the repo on their behalf — so visitors need no
+account at all.
+
+- **Submit** (`submit.html`) → Worker `/api/submit` → uploads the file to
+  `pending/` in this repo and opens a GitHub Issue labeled `submission` for
+  review.
+- **Vote** (up/down arrows on the feed) → Worker `/api/vote` → updates
+  `votes.json` in this repo. One vote per browser (tracked via a random ID
+  in localStorage).
+- **Review queue** = the repo's Issues tab, filtered by the `submission`
+  label. To publish one: download the attached file from the issue, run it
+  through `scripts/make_image_meme.py` / `make_video_meme.py` +
+  `scripts/add_meme.py` like normal, push, then close the issue.
 
 ## Structure
 

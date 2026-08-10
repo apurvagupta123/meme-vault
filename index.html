@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MemeVault — Fresh takes, daily</title>
+<title>MemeVault — Go Fun Yourself</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,24 +11,40 @@
 <header>
   <div class="brand">
     <h1>Meme<span>Vault</span></h1>
-    <div class="tagline">memes on whatever's happening right now</div>
   </div>
-  <div class="controls">
-    <input type="text" id="search" placeholder="search memes…">
+  <div class="header-controls">
+    <input type="text" id="search" placeholder="Search memes...">
+    <a class="post-btn" href="submit.html">Post</a>
   </div>
 </header>
 
-<div class="tag-bar" id="tagBar"></div>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-item active" data-tag="all">
+        <span class="dot"></span> Home
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Tags</div>
+      <div id="tagList"></div>
+    </div>
+  </aside>
 
-<main>
-  <div class="grid" id="grid"></div>
-  <div class="empty-state" id="emptyState" style="display:none;">
-    <h2>No memes yet</h2>
-    <p>Add your first one with scripts/add_meme.py — check README.md.</p>
-  </div>
-</main>
+  <main>
+    <div class="feed-tabs">
+      <div class="feed-tab active">Home</div>
+      <div class="feed-tab">Trending</div>
+    </div>
+    <div id="feed"></div>
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <h2>No memes yet</h2>
+      <p>Add your first one with scripts/add_meme.py — check README.md.</p>
+    </div>
+  </main>
+</div>
 
-<footer>Built for Dev · updated whenever a new meme drops</footer>
+<footer class="site-footer">Built for Dev · updated whenever a new meme drops</footer>
 
 <div class="lightbox" id="lightbox">
   <button class="close-btn" id="closeBtn">&times;</button>

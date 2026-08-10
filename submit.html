@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit a meme — MemeVault</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .submit-wrap { max-width: 520px; margin: 40px auto; padding: 0 20px; }
+  .submit-wrap h2 { font-size: 22px; margin-bottom: 4px; }
+  .submit-wrap p.sub { color: var(--text-dim); font-size: 14px; margin-bottom: 24px; }
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .field input[type=text], .field textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 14px; font-family: inherit; background: #fff;
+  }
+  .field textarea { resize: vertical; min-height: 70px; }
+  .field input[type=file] { font-size: 13px; }
+  .submit-btn {
+    background: var(--accent); color: #fff; border: none; padding: 11px 22px;
+    border-radius: 999px; font-weight: 700; font-size: 14px; cursor: pointer;
+  }
+  .submit-btn:disabled { opacity: 0.5; cursor: default; }
+  .status-msg { margin-top: 14px; font-size: 14px; }
+  .status-msg.error { color: #c0392b; }
+  .status-msg.ok { color: #1d9e75; }
+  .back-link { display: inline-block; margin-bottom: 18px; font-size: 13px; color: var(--text-dim); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><h1>Meme<span>Vault</span></h1></div>
+</header>
+
+<div class="submit-wrap">
+  <a class="back-link" href="index.html">&larr; Back to feed</a>
+  <h2>Submit a meme</h2>
+  <p class="sub">Send us your image, GIF, or short video. Every submission is reviewed before it goes live.</p>
+
+  <form id="submitForm">
+    <div class="field">
+      <label for="title">Title</label>
+      <input type="text" id="title" name="title" placeholder="Me walking into Monday" required maxlength="120">
+    </div>
+    <div class="field">
+      <label for="tags">Tags (comma-separated)</label>
+      <input type="text" id="tags" name="tags" placeholder="trending, mood, raccoon" maxlength="200">
+    </div>
+    <div class="field">
+      <label for="caption">Caption / context (optional)</label>
+      <textarea id="caption" name="caption" maxlength="500" placeholder="Why is this funny?"></textarea>
+    </div>
+    <div class="field">
+      <label for="file">Image, GIF, or video (max 9MB)</label>
+      <input type="file" id="file" name="file" accept="image/*,video/*" required>
+    </div>
+    <button class="submit-btn" type="submit" id="submitBtn">Submit for review</button>
+    <div class="status-msg" id="statusMsg"></div>
+  </form>
+</div>
+
+<script>
+  const API_BASE = "https://meme-api.theapurva.com";
+  const form = document.getElementById("submitForm");
+  const btn = document.getElementById("submitBtn");
+  const status = document.getElementById("statusMsg");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    status.textContent = "";
+    status.className = "status-msg";
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
+
+    const fd = new FormData(form);
+    try {
+      const res = await fetch(`${API_BASE}/api/submit`, { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error || "Submission failed.");
+      status.textContent = "Sent for review! We'll publish it if it's a good fit.";
+      status.className = "status-msg ok";
+      form.reset();
+    } catch (err) {
+      status.textContent = "Something went wrong: " + err.message;
+      status.className = "status-msg error";
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Submit for review";
+    }
+  });
+</script>
+
+</body>
+</html>
